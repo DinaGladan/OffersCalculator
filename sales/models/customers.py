@@ -5,7 +5,7 @@ from settings.models import Gender, CustomerType
 
 class Customer(models.Model):
     name = models.CharField(
-        max_length=250, help_texter="Customer name", null=False, blank=False
+        max_length=250, help_text="Customer name", null=False, blank=False
     )
     last_name = models.CharField(max_length=200, null=True, blank=True)
     vat_id = models.CharField(max_length=11, null=True, blank=True)

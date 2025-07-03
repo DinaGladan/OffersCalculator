@@ -4,7 +4,7 @@ from django.urls import reverse
 
 class Tenant(models.Model):
     name = models.CharField(
-        max_length=250, help_texter="Tenant name", null=False, blank=False
+        max_length=250, help_text="Tenant name", null=False, blank=False
     )
     vat_id = models.CharField(max_length=11, null=True, blank=True)
     street = models.CharField(max_length=250, null=True, blank=True)
