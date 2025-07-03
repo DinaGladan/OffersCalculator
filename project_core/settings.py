@@ -130,9 +130,12 @@ STATICFILES_DIRS = [BASE_DIR / "static"]
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-
+# koristi user model kojeg smo implementirali u folderu account u klasi User
+# umjesto defaultnog auth.User kojeg je django implementira
 AUTH_USER_MODEL = "account.User"
 
+# kad se prijavis otidji na URL koji se nalazi u varijabli dashboard
+# unutar foldera pages
 LOGIN_REDIRECT_URL = "pages:dashboard"
-LOGIN_URL = "account:login"
-LOGIN_URL = "account:logout"
+LOGIN_URL = "account:login"  # ako nije prijavljen, usmjeri ga na URL login
+LOGIN_URL = "account:logout"  # mislim da ovo nije dobro

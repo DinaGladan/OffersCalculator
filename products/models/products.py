@@ -8,7 +8,9 @@ class Product(models.Model):
     name = models.CharField(
         max_length=150, help_text="Product name", null=False, blank=False
     )
-    code = models.CharField(max_length="Product code", null=False, blank=False)
+    code = models.CharField(
+        max_length=20, help_text="Product code", null=False, blank=False
+    )
     description = models.CharField(
         max_length=150, help_text="Product description", null=True, blank=True
     )
@@ -28,7 +30,7 @@ class Product(models.Model):
         null=True,
         blank=True,
     )
-    fixed_coasts = models.DecimalField(
+    fixed_costs = models.DecimalField(
         max_digits=18,
         decimal_places=3,
         default=Decimal("0.00"),
@@ -44,9 +46,13 @@ class Product(models.Model):
         null=True,
         blank=True,
     )
-    ingridients = models.ManyToManyField(
-        Ingredient, related_name="products", blank=True
+    # proizvod može imati više sastojaka (i obrnuto)
+    ingredients = models.ManyToManyField(  # ingredients je naziv polja i on povezuje trenutni model (Product) s Ingridient modelom
+        Ingredient,
+        related_name="products",
+        blank=True,  # related name= iz modela Ingredient možeš pozvati .products da bi dobio sve proizvode koji koriste taj sastojak
     )
+    # sastojak proizvoda moze bit sam po sebi proizvod
     ingredients_from_products = models.ManyToManyField("Product", blank=True)
 
     def __str__(self):
@@ -62,7 +68,7 @@ class Product(models.Model):
         return reverse("products-detail", kwargs={"pk": self.pk})
 
     def calculate_total_price(self):
-        if len(self.ingridients.all()) > 0:
+        if len(self.ingredients.all()) > 0:  # ako proizvod ima bar 1 sastojak
             ingredient_total = Decimal(
                 sum(
                     Decimal(ingredient.total_price)
@@ -81,6 +87,7 @@ class Product(models.Model):
             )
         else:
             ingredient_from_products_total = Decimal(0.0)
+
         self.base_price = (
             Decimal(self.fixed_costs)
             + ingredient_total
@@ -88,10 +95,11 @@ class Product(models.Model):
         )
         self.total_price = Decimal(self.base_price * self.price_mod)
 
-    def save(self, *args, kwargs):
-        if not self.pk:
+    def save(self, *args, kwargs):  # args je tuple, kwargs dict
+        if not self.pk:  # ako proizvod još ne postoji u bazi
             super(Product, self).save(*args, kwargs)
             self.calculate_total_price()
+            # treba super nadodat
         else:
             self.calculate_total_price()
             super(Product, self).save(*args, kwargs)

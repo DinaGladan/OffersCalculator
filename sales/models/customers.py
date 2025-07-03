@@ -14,8 +14,12 @@ class Customer(models.Model):
     city = models.CharField(max_length=50, null=True, blank=True)
     country = models.CharField(max_length=150, null=True, blank=True)
 
-    gender = models.ForeignKey(
-        Gender, on_delete=models.DO_NOTHING, null=True, blank=True
+    # one to many
+    gender = models.ForeignKey(  # svaki kupac moze imat povezan jedan gender
+        Gender,
+        on_delete=models.DO_NOTHING,  # do nothing nam kaze ako izbrisemo gender, necemo iz baze customera brisat
+        null=True,
+        blank=True,
     )
 
     customer_type = models.ForeignKey(
@@ -26,10 +30,10 @@ class Customer(models.Model):
         ordering = ["name"]
 
     def __str__(self):
-        if self.name != "" and self.code is not None:
-            return f"({self.name} {self.code})"
+        if self.name != "" and self.last_name is not None:
+            return f"({self.name} {self.last_name})"
         else:
-            return super().__str__()
+            return self.name
 
     def get_absolute_url(self):
-        pass
+        return reverse("customers-detail", kwargs={"pk": self.pk})

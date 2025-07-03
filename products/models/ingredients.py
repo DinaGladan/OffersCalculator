@@ -2,12 +2,18 @@ from django.db import models
 from django.urls import reverse
 from decimal import Decimal
 
+# zelimo da 1 proizvod ima 1 ili vise sastojaka
+
 
 class Ingredient(models.Model):
     name = models.CharField(
         max_length=150, help_text="Ingredient name", null=False, blank=False
     )
-    code = models.CharField(max_length="Ingredient code", null=False, blank=False)
+    code = models.CharField(
+        max_length=20, help_text="Ingredient code", null=False, blank=False
+    )
+    # blank je postoji al je prazno (sting smi bit enter)
+    # null je da ne postoji, ne moze niti enter
     description = models.CharField(
         max_length=150, help_text="Ingredient description", null=True, blank=True
     )
@@ -38,14 +44,21 @@ class Ingredient(models.Model):
 
     def __str__(self):
         if self.name != "" and self.code is not None:
-            return f"({self.name} {self.code})"
+            return f"{self.name} ({self.code})"
         else:
             return super().__str__()
 
+    # ova podklasa je posebna jer se zove Meta
+    # samo jer se tako zove Django ce uvik automatski u nju uc i izvrsit je
+    # nije potrebno pozivanje
+    # u njoj se radi konfiguracija modela (bitna za Django)
     class Meta:  # to je podklasa, mozemo specificirat postavke
-        ordering = ["name", "code"]
+        ordering = ["name", "code"]  # -name bi od nazad ka naprid sortiralo
 
-    def get_absolute_url(self):
+    # metoda se koristi kad zelimo znat URL
+    # reverse je Django funkcija koja trazi url iz urls.py po ruti ingredients-detail
+    # i onda vraca URL te rute s IDjem (pk) tog objekta
+    def get_absolute_url(self):  # poziva se unutar templatea u HTMLu
         return reverse("ingredients-detail", kwargs={"pk": self.pk})
 
     def calculate_total_price(self):
@@ -53,5 +66,5 @@ class Ingredient(models.Model):
 
     # nadjacavamo vec postojecu save metodu koja postoji unutar models.Model
     def save(self, *args, kwargs):
-        self.calculate_total_price()
-        super(Ingredient, self).save(*args, kwargs)
+        self.calculate_total_price()  # ovo je nadjacavanje
+        super(Ingredient, self).save(*args, kwargs)  # a onda nek na stavi po defaultnoj

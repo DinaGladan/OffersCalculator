@@ -12,4 +12,4 @@ class CustomerType(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse("customer-type-detail", kwargs={"pk": self.pk})
+        return reverse("customer-types-detail", kwargs={"pk": self.pk})
