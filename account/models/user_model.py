@@ -33,6 +33,7 @@ class User(AbstractBaseUser, PermissionsMixin, models.Model):
     is_superuser = models.BooleanField(default=False)
 
     # nacin na koji ce se korisnici prijavljivat
+    # konstante se pisu velikim slovima
     USERNAME_FIELD = "email"
     # Osim emaila se moraju unijeti i ime i prezime (dodatna obavezna polja)
     REQUIRED_FIELDS = ["first_name", "last_name"]
